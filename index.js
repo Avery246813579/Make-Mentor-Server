@@ -50,6 +50,22 @@ app.post('/test', function(req, res){
     })
 });
 
+app.get('/login', function(req, res){
+    res.writeHead(302, {
+        'Location': 'https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=78jv3w4zvog91u&redirect_uri=http%3A%2F%2Flocalhost%3A6969%2Fcallback&state=987654321&scope=r_fullprofile'
+    });
+    res.end();
+});
+
+
+app.get('/callback', function(req, res){
+    res.status(200).json({
+        success: true,
+        code: 100
+    })
+});
+
+
 // app.listen(8081, function () {
 //     console.log(pack.name + " v" + pack.version + " has booted up.");
 // });
