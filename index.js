@@ -18,8 +18,14 @@ var express = require('express');
 var app = express();
 var fs = require('fs');
 app.use(bodyParser.json());
+require('dotenv').config();
 
 var pack = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+
+/**
+ * Loading all of our things
+ */
+require('./server/tables/TableHandler')();
 
 var RouteHelper = require('./server/util/RouteHelper');
 var Errors = require('./server/util/Errors');
