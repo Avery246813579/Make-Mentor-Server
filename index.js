@@ -169,11 +169,15 @@ app.get('/callback2', function (req, res) {
     })
 });
 
+app.get('/', function(req, res){
+    res.send("Hey");
+});
+
 
 // app.listen(8081, function () {
 //     console.log(pack.name + " v" + pack.version + " has booted up.");
 // });
 
-app.listen(8081, function () {
+app.listen(process.env.PORT || 8081, function () {
     console.log(pack.name + " v" + pack.version + " has booted up.");
 });
