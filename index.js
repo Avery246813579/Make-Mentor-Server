@@ -186,7 +186,7 @@ app.get('/', function(req, res){
             return;
         }
 
-        res.json(aRows[0])
+        res.status(200).json(aRows[0])
     });
 });
 
