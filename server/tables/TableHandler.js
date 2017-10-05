@@ -14,7 +14,8 @@ function TableHandler() {
     console.log('Make Mentor >> Database is running');
     _Database.table([
         /* Account Routes */
-        require('./test/Test')
+        require('./account/Accounts'),
+        require('./account/Tokens')
     ]);
 }
 

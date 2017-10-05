@@ -26,7 +26,7 @@ describe("Event Route API", function () {
                 EVENT = body['data'];
 
                 config['PAST_EVENT'] = EVENT;
-                fs.writeFile('test/cache.json', JSON.stringify(config), 'utf8');
+                fs.writeFile('account/cache.json', JSON.stringify(config), 'utf8');
 
                 done();
             });

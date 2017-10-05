@@ -42,3 +42,13 @@ errors['BODY_ARGUMENT_INVALID_TYPE'] = prototype.BODY_ARGUMENT_INVALID_TYPE = {
     CODE: 4,
     DESCRIPTION: "Argument in body does not match required type"
 };
+
+errors['API_ERROR'] = prototype.API_ERROR = {
+    CODE: 5,
+    DESCRIPTION: "Something went wrong contacting an API"
+};
+
+errors['INTERNAL_ERROR'] = prototype.INTERNAL_ERROR = {
+    CODE: 6,
+    DESCRIPTION: "Internal Error"
+};
