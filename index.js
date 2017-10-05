@@ -145,13 +145,10 @@ app.get('/callback', function (req, res) {
         if (typeof body['access_token'] !== "undefined") {
             res.writeHead(200, {
                 'Set-Cookie': 'access_token=' + body['access_token'],
-                'Content-Type': 'text/plain'
+                'Content-Type': 'text/html'
             });
 
-            res.write(JSON.stringify({
-                success: true,
-                code: 100
-            }));
+            res.write('<a href="../">Let\'s go home</a>');
 
             res.end();
 
