@@ -41,9 +41,5 @@ module.exports = new Table('Accounts', new Scheme({
         TYPE: "VARCHAR",
         LENGTH: 100,
         NULL: false
-    },
-    STATUS: {
-        TYPE: "TINYINT",
-        LENGTH: 1
     }
 }));
