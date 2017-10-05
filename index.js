@@ -63,7 +63,7 @@ app.post('/account', function (req, res) {
 
 app.get('/login', function (req, res) {
     res.writeHead(302, {
-        'Location': 'https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=78jv3w4zvog91u&redirect_uri=http%3A%2F%2Flocalhost%3A6969%2Fcallback&state=987654321&scope=r_basicprofile+r_emailaddress '
+        'Location': 'https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=78jv3w4zvog91u&redirect_uri=' + process.env.LINKED_CALLBACK + '&state=987654321&scope=r_basicprofile+r_emailaddress '
     });
     res.end();
 });
@@ -131,7 +131,7 @@ app.post('/validate', function (req, res) {
 
 app.get('/callback', function (req, res) {
     request.post({
-        url: 'https://www.linkedin.com/uas/oauth2/accessToken?grant_type=authorization_code&code=' + req.query.code + '&redirect_uri=http%3A%2F%2Flocalhost%3A6969%2Fcallback&client_id=78jv3w4zvog91u&client_secret=' + process.env.LINKEDIN_SECRET,
+        url: 'https://www.linkedin.com/uas/oauth2/accessToken?grant_type=authorization_code&code=' + req.query.code + '&redirect_uri=' + process.env.LINKED_CALLBACK + '&client_id=78jv3w4zvog91u&client_secret=' + process.env.LINKEDIN_SECRET,
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
