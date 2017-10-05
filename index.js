@@ -75,8 +75,12 @@ var Tokens = require('./server/tables/account/Tokens');
 Update our Linkedin information and make sure we have our Token assigned to our Account
  */
 app.post('/validate', function (req, res) {
+    validate();
+});
+
+function validate(access_token){
     request.get({
-        url: 'https://api.linkedin.com/v1/people/~:(id,first_name,last_name,picture-url,industry,email-address,headline)?oauth2_access_token=' + req.cookies.access_token + '&format=json',
+        url: 'https://api.linkedin.com/v1/people/~:(id,first_name,last_name,picture-url,industry,email-address,headline)?oauth2_access_token=' + access_token + '&format=json',
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -91,8 +95,7 @@ app.post('/validate', function (req, res) {
 
         Accounts.find({LINKED_ID: body['id']}, function (aErr, aRows) {
             if (aErr) {
-                RouteHelper.sendError(res, Errors.INTERNAL_ERROR);
-                return;
+                return false;
             }
 
             var statement = {
@@ -113,21 +116,21 @@ app.post('/validate', function (req, res) {
                 });
             }
 
-            Tokens.find({LINKED_ID: body['id'], ACCESS_TOKEN: req.cookies.access_token}, function (tErr, tRows) {
+            Tokens.find({LINKED_ID: body['id'], ACCESS_TOKEN: access_token}, function (tErr, tRows) {
                 if (tErr) {
-                    RouteHelper.sendError(res, Errors.INTERNAL_ERROR);
-                    return;
+                    return false;
                 }
 
                 if (tRows.length < 1) {
-                    Tokens.insert({LINKED_ID: body['id'], ACCESS_TOKEN: req.cookies.access_token}, function(tiErr){});
+                    Tokens.insert({LINKED_ID: body['id'], ACCESS_TOKEN: access_token}, function (tiErr) {
+                    });
                 }
 
-                RouteHelper.sendSuccess(res);
+                return true;
             });
         });
     });
-});
+}
 
 app.get('/callback', function (req, res) {
     request.post({
@@ -152,6 +155,7 @@ app.get('/callback', function (req, res) {
 
             res.end();
 
+            validate(body['access_token']);
             return;
         }
 
@@ -169,24 +173,36 @@ app.get('/callback2', function (req, res) {
     })
 });
 
-app.get('/', function(req, res){
-    if(typeof req.cookies.access_token === "undefined"){
+app.get('/', function (req, res) {
+    if (typeof req.cookies.access_token === "undefined") {
         res.send("You are not logged in :(<br /><a href='login'>Login</a>");
         return;
     }
 
-    Accounts.find({LINKED_ID: req.cookies.access_token}, function(aErr, aRows){
-        if(aErr){
+    Tokens.find({ACCESS_TOKEN: req.cookies.access_token}, function (tErr, tRows) {
+        if (tErr) {
             res.send("Internal Error!");
             return;
         }
 
-        if(aRows.length < 1){
+        if(tRows.length < 1){
             res.send("You are not logged in :(<br /><a href='login'>Login</a>");
             return;
         }
 
-        res.status(200).json(aRows[0])
+        Accounts.find({LINKED_ID: tRows[0]['LINKED_ID']}, function (aErr, aRows) {
+            if (aErr) {
+                res.send("Internal Error!");
+                return;
+            }
+
+            if (aRows.length < 1) {
+                res.send("You are not logged in :(<br /><a href='login'>Login</a>");
+                return;
+            }
+
+            res.status(200).json(aRows[0])
+        });
     });
 });
 
