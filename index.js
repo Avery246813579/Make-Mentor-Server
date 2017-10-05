@@ -170,7 +170,24 @@ app.get('/callback2', function (req, res) {
 });
 
 app.get('/', function(req, res){
-    res.send("Hey");
+    if(typeof req.cookies.access_token === "undefined"){
+        res.send("You are not logged in :(<br /><a href='login'>Login</a>");
+        return;
+    }
+
+    Accounts.find({LINKED_ID: req.cookies.access_token}, function(aErr, aRows){
+        if(aErr){
+            res.send("Internal Error!");
+            return;
+        }
+
+        if(aRows.length < 1){
+            res.send("You are not logged in :(<br /><a href='login'>Login</a>");
+            return;
+        }
+
+        res.json(aRows[0])
+    });
 });
 
 
